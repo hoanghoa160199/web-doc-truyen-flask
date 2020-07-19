@@ -32,7 +32,7 @@
     <p>Nội dung chương {{chương}}</p>
     <p>Số trang truyện: {{truyện.tìm_trang(chương)|length}}</p>
 
-    <table class="ui grid" id="{{filename}}">
+    <table class="ui grid" id="{{filename}}" style="margin: 0 auto">
         <tbody>
             {% for dòng_chap in danh_sách_chap %}
             <tr>
@@ -40,7 +40,8 @@
                 {% set filename = truyện.tên_folder + '/chapter-' + chương + '/' + chap %}
                 <td class="four wide column">
                     <p>
-                        <img src="{{ url_for('lấy_ảnh', filename=filename) }}" style="margin-left:600px" />
+                        <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                            style="margin-left: auto; margin-right: auto; display: block;" />
                     </p>
                 </td>
                 {% endif %} {% endfor %}

@@ -2,7 +2,7 @@ import json
 import os
 
 PATH = "truyện"
-MISSING_INFO = 'Chưa có thông tin'
+MISSING_INFO = 'Chưa cập nhật'
 
 
 class Manga:

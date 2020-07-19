@@ -1,5 +1,5 @@
 import os
-from .manga import Manga
+from .manga import Manga, MISSING_INFO
 import typing as t
 
 
@@ -41,6 +41,9 @@ class MangaManager:
         ]
 
     def gợi_ý_theo_tác_giả(self, truyện_hiện_tại: Manga):
+        if truyện_hiện_tại.tác_giả == MISSING_INFO:
+            return []
+
         kết_quả_tìm_kiếm = []
         for truyện in self.danh_sách_truyện.values():
             if truyện.tên == truyện_hiện_tại.tên:
@@ -51,6 +54,9 @@ class MangaManager:
         return kết_quả_tìm_kiếm
 
     def gợi_ý_theo_thể_loại(self, truyện_hiện_tại: Manga):
+        if truyện_hiện_tại.thể_loại == [MISSING_INFO]:
+            return []
+
         kết_quả_tìm_kiếm = []
         for truyện in self.danh_sách_truyện.values():
             if truyện.tên == truyện_hiện_tại.tên:

@@ -19,58 +19,68 @@
   <br />
 
   {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
-  <img src="{{ url_for('lấy_ảnh', filename=filename) }}" style="width: 350px; height: 500px; margin-right:100px" />
-  <h2>
-    {{truyện.tên}}
-    {% if current_user.name %}
-    <a href="{{ url_for(
-      'thêm_hoặc_xóa_vào_tủ_truyện',
-      user_id=current_user.id,
-      ten_folder=truyện.tên_folder,
-      trang_hien_tai=url_for('đọc', ten_folder=truyện.tên_folder)) }}" method="post">
-      <button style="font-size: 17px;">
-        {% if truyện.tên_folder in current_user.tu_truyen %}
-        ❤️ đã thêm vào tủ truyện yêu thích
-        {% else %}
-        🖤 chưa có trong tủ truyện yêu thích
+  <div style="text-align: left;">
+    <div style="display: inline-block;">
+      <img src="{{ url_for('lấy_ảnh', filename=filename) }}" style="width: 350px; height: 500px; margin-right:20px" />
+    </div>
+    <div style="display: inline-block; vertical-align: top; font-size: larger; margin-top: 50px;">
+      <h2>
+        {{truyện.tên}}
+        {% if current_user.name %}
+        <a href="{{ url_for(
+          'thêm_hoặc_xóa_vào_tủ_truyện',
+          user_id=current_user.id,
+          ten_folder=truyện.tên_folder,
+          trang_hien_tai=url_for('đọc', ten_folder=truyện.tên_folder)) }}" method="post">
+          <button style="font-size: 17px;">
+            {% if truyện.tên_folder in current_user.tu_truyen %}
+            ❤️ đã thêm vào tủ truyện
+            {% else %}
+            🖤 chưa thêm vào tủ truyện
+            {% endif %}
+          </button>
+        </a>
         {% endif %}
-      </button>
-    </a>
-    {% if truyện.tên_folder in current_user.last_read %}
-    {% set chuong = current_user.last_read[truyện.tên_folder] %}
-    <button onclick="window.location.href='{{url_for(
-        'đọc_chương',
-        ten_folder=truyện.tên_folder, 
-        chuong=chuong)}}'" style="font-size: 17px;">
-      Tiếp tục đọc chương <b>{{chuong}}</b>
-    </button>
-    {% endif %}
-    {% endif %}
-  </h2>
-  <p>
-    Tác giả: <b>{{truyện.tác_giả}}</b>
-    <br />
-    Thể loại: <b>{{', '.join(truyện.thể_loại)}}</b>
-    <br />
-    Điểm: <b>{{truyện.điểm}}/10</b>
-  </p>
-
-  <p>Số chương <b>{{truyện.chương|length}}</b></p>
+      </h2>
+      <p>
+        Tác giả: <b>{{truyện.tác_giả}}</b>
+        <br />
+        Thể loại: <b>{{', '.join(truyện.thể_loại)}}</b>
+        <br />
+        Yêu thích: {{truyện.điểm * '🧡'}}{{(10-truyện.điểm) * '🤍'}}
+      </p>
+      <p>
+        Số chương <b>{{truyện.chương|length}}</b>
+        <br />
+        {% if truyện.tên_folder in current_user.last_read %}
+        {% set chuong = current_user.last_read[truyện.tên_folder] %}
+        <button onclick="window.location.href='{{url_for(
+            'đọc_chương',
+            ten_folder=truyện.tên_folder, 
+            chuong=chuong)}}'" style="font-size: 17px;">
+          Tiếp tục đọc chương <b>{{chuong}}</b>
+        </button>
+        {% endif %}
+      </p>
+    </div>
+  </div>
 
   {% if truyện_gợi_ý %}
-  <p>Gợi ý các truyện cùng tác giả <b>{{truyện.tác_giả}}</b></p>
+  <h2>Gợi ý các truyện cùng tác giả <b>{{truyện.tác_giả}}</b></h2>
   <table class="ui grid" id="{{filename}}">
     <tbody>
       {% for dòng_truyện in truyện_gợi_ý %}
       <tr>
         {% for truyện in dòng_truyện %} {% if truyện %}
         {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
-        <td class="four wide column">
+        <td class="four wide column" style="vertical-align: top;">
           <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
             <p>
               <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
                 style="width: 175px; height: 250px; margin-right:20px" />
-              <h3>{{truyện.tên}}</h3>
+              <h3 style="max-width: 175px;">
+                {{truyện.tên}}
+              </h3>
           </a>
         </td>
         {% endif %} {% endfor %}
@@ -81,19 +91,23 @@
   {% endif %}
 
   {% if truyện_gợi_ý_tl %}
-  <p> Gợi ý các truyện cùng thể loai</p>
+  <h2>Gợi ý các truyện cùng thể loai</h2>
   <table class="ui grid" id="{{filename}}">
     <tbody>
       {% for dòng_truyện in truyện_gợi_ý_tl %}
       <tr>
         {% for truyện in dòng_truyện %} {% if truyện %}
         {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
-        <td class="four wide column">
+        <td class="four wide column" style="vertical-align: top;">
           <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
             <p>
               <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
                 style="width: 175px; height: 250px; margin-right:20px" />
-              <h3>{{truyện.tên}}</h3>
+              <h3 style="max-width: 175px;">
+                {{truyện.tên}}
+                <br />
+                {{truyện.điểm * '🧡'}}{{(10-truyện.điểm) * '🤍'}}
+              </h3>
           </a>
         </td>
         {% endif %} {% endfor %}
@@ -103,7 +117,7 @@
   </table>
   {% endif %}
 
-  <p>Danh sách chương</p>
+  <h2>Danh sách chương</h2>
 
   <table class="ui grid" id="{{filename}}">
     <tbody>

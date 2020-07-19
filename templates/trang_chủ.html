@@ -55,14 +55,14 @@
         {% for truyện in dòng_truyện %} {% if truyện %}
 
         {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
-        <td class="four wide column">
+        <td class="four wide column" style="vertical-align: top;">
           <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
             <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-              style="width: 350px; height: 500px; margin-right:100px" />
+              style="width: 400px; height: 550px; margin-right: 50px; margin-top: 10px;" />
           </a>
-          <h2>
+          <h2 style="max-width: 400px;">
             <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
-              {{truyện.tên}}
+              <span style="font-size: smaller;">{{truyện.tên}}</span>
             </a>
             {% if current_user.name %}
             <a href="{{ url_for(
@@ -79,26 +79,26 @@
               </button>
             </a>
             {% endif %}
-            <p>
-              Điểm: {{truyện.điểm}}/10
-            </p>
+            <br />
+            {{truyện.điểm * '🧡'}}{{(10-truyện.điểm) * '🤍'}}
           </h2>
+          <p>
+            <br />
+            {% if truyện.tên_folder in current_user.last_read %}
+            {% set chuong = current_user.last_read[truyện.tên_folder] %}
+            <button
+              onclick="window.location.href='{{url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chuong)}}'"
+              style="font-size: 17px;">
+              Tiếp tục đọc chương <b>{{chuong}}</b>
+            </button>
+            {% endif %}
+          </p>
         </td>
         {% endif %} {% endfor %}
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  {% if current_user.is_authenticated %}
-  <h3>Lịch sử đọc:</h3>
-  <ul>
-    {% for tên_folder, chuong in current_user.last_read.items() %}
-    <a href="{{url_for('đọc_chương', ten_folder=tên_folder, chuong=chuong)}}">
-      <li><b>{{MANGA_MANAGER.danh_sách_truyện[tên_folder].tên}}</b> chương <b>{{chuong}}</b></li>
-    </a>
-    {% endfor %}
-  </ul>
-  {% endif %}
 </body>
 
 </html>
