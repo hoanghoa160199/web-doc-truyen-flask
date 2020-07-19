@@ -1,5 +1,4 @@
 flask
-coloredlogs
 Flask-Caching
 flask-login
 Flask-WTF

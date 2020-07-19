@@ -17,9 +17,21 @@
   <p>
     Đang đăng nhập: <b>{{ current_user.name }}</b><br />
   </p>
-  <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'">
-    Tủ truyện yêu thích của tôi ({{current_user.tu_truyen|length}} truyện)
+  <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'" style="font-size: 15px;">
+    Tủ truyện yêu thích của tôi ({{current_user.tu_truyen|length}} truyện) ❤️
   </button>
+
+  {% if current_user.last_read %}
+  <a href="{{ url_for('last_read')}}" method="post">
+    {% set ten_folder, chuong = current_user.last_read.split('/') %}
+    <button style="font-size: 17px;">
+      Tiếp tục đọc
+      <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
+      chương <b>{{chuong}}</b>
+    </button>
+  </a>
+  {% endif %}
+
   {% else %}
   <button onclick="window.location.href='{{url_for('login')}}'">
     đăng nhập
@@ -40,23 +52,26 @@
               <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
                 style="width: 350px; height: 500px; margin-right:100px" />
             </a>
-          <h3>
+          <h2>
             <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
               {{truyện.tên}}
             </a>
             {% if current_user.name %}
-            <a href="{{ url_for('thêm_vào_tủ_truyện', user_id=current_user.id, ten_folder=truyện.tên_folder) }}"
-              method="post">
+            <a href="{{ url_for(
+              'thêm_hoặc_xóa_vào_tủ_truyện',
+              user_id=current_user.id,
+              ten_folder=truyện.tên_folder,
+              trang_hien_tai=url_for('trang_chủ')) }}" method="post">
               <button>
                 {% if truyện.tên_folder in current_user.tu_truyen %}
-                💚
+                ❤️
                 {% else %}
                 🖤
                 {% endif %}
               </button>
             </a>
             {% endif %}
-          </h3>
+          </h2>
           </P>
           </a>
 
@@ -67,6 +82,5 @@
     </tbody>
   </table>
 </body>
-
 
 </html>

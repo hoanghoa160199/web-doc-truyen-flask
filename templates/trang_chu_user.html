@@ -32,7 +32,7 @@
                             <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
                                 style="width: 350px; height: 500px; margin-right:100px" />
                         </a>
-                    <h3>
+                    <h2>
                         <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
                             {{truyện.tên}}
                         </a>
@@ -40,7 +40,7 @@
                             method="post">
                             <button>❌</button>
                         </a>
-                    </h3>
+                    </h2>
                     <p>
                         Tác giả: {{truyện.tác_giả}}
                         <br />

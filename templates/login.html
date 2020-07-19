@@ -16,7 +16,7 @@
       <input class="btn btn-default" type="submit" value="Đăng nhập" />
     </form>
 
-    <h3>Đăng ký</h3>
+    <h2>Đăng ký</h2>
     <form action="{{ url_for('register') }}" method="post">
       <input type="text" placeholder="Tài khoản" name="username" value="{{ request.form.username }}" />
       <input type="password" placeholder="Mật khẩu" name="password" value="{{ request.form.password }}" />

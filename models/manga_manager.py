@@ -40,6 +40,28 @@ class MangaManager:
             if int(năm) == truyện.năm
         ]
 
+    def gợi_ý_theo_tác_giả(self, truyện_hiện_tại: Manga):
+        kết_quả_tìm_kiếm = []
+        for truyện in self.danh_sách_truyện.values():
+            if truyện.tên == truyện_hiện_tại.tên:
+                continue
+
+            if truyện.tác_giả.lower() == truyện_hiện_tại.tác_giả.lower():
+                kết_quả_tìm_kiếm.append(truyện)
+        return kết_quả_tìm_kiếm
+
+    def gợi_ý_theo_thể_loại(self, truyện_hiện_tại: Manga):
+        kết_quả_tìm_kiếm = []
+        for truyện in self.danh_sách_truyện.values():
+            if truyện.tên == truyện_hiện_tại.tên:
+                continue
+
+            for thể_loại in truyện_hiện_tại.thể_loại:
+                if thể_loại in truyện.thể_loại:
+                    kết_quả_tìm_kiếm.append(truyện)
+                    break
+        return kết_quả_tìm_kiếm
+
     def update(self):
         folders = os.listdir('truyện')
         for tên_folder in folders:

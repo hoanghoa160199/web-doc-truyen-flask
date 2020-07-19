@@ -12,7 +12,12 @@ class UserManager:
         self.users = {}
 
         for k, v in data.items():
-            self.users[v["id"]] = User(name=v["name"], password=v["password"], tu_truyen=v["tủ truyện"])
+            self.users[v["id"]] = User(
+                name=v["name"],
+                password=v["password"],
+                tu_truyen=v["tủ truyện"],
+                last_read=v['last_read']
+            )
             self.users[v["id"]].id = v["id"]
 
     def check(self, name: str, password: str):

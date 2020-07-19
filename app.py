@@ -1,29 +1,12 @@
-import logging
 import os
-import sys
 from datetime import datetime
 
-import coloredlogs
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
 from flask_login import LoginManager, current_user, login_user
 
 from models import Manga, MangaManager, UserManager
-
-coloredlogs.DEFAULT_LEVEL_STYLES = {
-    **coloredlogs.DEFAULT_LEVEL_STYLES,
-    "critical": {"background": "red"},
-    "debug": coloredlogs.DEFAULT_LEVEL_STYLES["info"]
-}
-
-log_level = logging.INFO
-format_string = "%(asctime)s | %(name)s | %(levelname)s | %(message)s"
-
-coloredlogs.DEFAULT_LOG_LEVEL = log_level
-coloredlogs.DEFAULT_LOG_FORMAT = format_string
-coloredlogs.install(stream=sys.stdout)
-
-logging.basicConfig(level=log_level, format=format_string)
+from utils import Utilities as UTIL
 
 logs = []
 
@@ -42,17 +25,10 @@ def load_user(user_id):
     return USER_MANAGER.users[user_id]
 
 
-@app.route('/')
-def hello_world():
-    # return redirect(url_for('login'))
-    return redirect(url_for('trang_chủ'))
-
-
 @app.route('/register', methods=['POST'])
 def register():
     error, success = '', ''
     if request.method == 'POST':
-
         name, password = request.form['username'], request.form['password']
         if USER_MANAGER.check_exist(name):
             error = "đã tồn tại"
@@ -62,7 +38,6 @@ def register():
 
         logs.append(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')} - {success}{error}")
 
-    # return redirect(url_for('login'))
     return render_template('login.html', error=error, success=success, logs=logs)
 
 
@@ -81,30 +56,54 @@ def login():
         else:
             error = 'Sai tài khoản / mật khẩu.'
             logs.append(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')} - {error}")
-
-        # return redirect(url_for('home'))
     return render_template('login.html', error=error, success=success, logs=logs, user=user)
 
 
-@app.route('/add_vao_tu_truyen/<user_id>/<ten_folder>', methods=['POST', 'GET'])
-def thêm_vào_tủ_truyện(user_id, ten_folder):
+@app.route('/add_vao_tu_truyen', methods=['POST', 'GET'])
+def thêm_hoặc_xóa_vào_tủ_truyện():
+    # lấy các data được truyền từ frontend.
+    user_id = request.args['user_id']
+    ten_folder = request.args['ten_folder']
+    trang_hien_tai = request.args.get('trang_hien_tai', None)
+
+    # tìm user với user_id truyền từ frontend.
     user = USER_MANAGER.users[user_id]
     if ten_folder in user.tu_truyen:
+        # xóa nếu đã có
         user.tu_truyen.remove(ten_folder)
     else:
+        # thêm nếu chưa có
         user.tu_truyen.append(ten_folder)
+
+    # cập nhật lại database
     USER_MANAGER.update_database()
-    return redirect(url_for('trang_chủ'))
+
+    # return redirect(trang_hien_tai or url_for('trang_chủ'))
+    if trang_hien_tai is None:
+        return redirect(url_for('trang_chủ'))
+    else:
+        return redirect(trang_hien_tai)
 
 
-@app.route('/xoa_khoi_tu_truyen/<user_id>/<ten_folder>', methods=['POST', 'GET'])
-def xóa_khỏi_tủ_truyện(user_id, ten_folder):
+@app.route('/xoa_khoi_tu_truyen', methods=['POST', 'GET'])
+def xóa_khỏi_tủ_truyện():
+    user_id = request.args['user_id']
+    ten_folder = request.args['ten_folder']
     user = USER_MANAGER.users[user_id]
     user.tu_truyen.remove(ten_folder)
     USER_MANAGER.update_database()
     return redirect(url_for('trang_chủ_user'))
 
 
+@app.route('/last_read', methods=['POST', 'GET'])
+def last_read():
+    if not current_user.is_authenticated:
+        return
+    ten_folder, chuong = current_user.last_read.split('/')
+    return redirect(url_for('đọc_chương', ten_folder=ten_folder, chuong=chuong))
+
+
+@app.route('/')
 @app.route('/trang_chu', methods=['GET', 'POST'])
 def trang_chủ():
     MANGA_MANAGER.update()
@@ -116,8 +115,8 @@ def trang_chủ():
             danh_sách_truyện = MANGA_MANAGER.tìm_truyện(request.form['tim'])
         else:
             danh_sách_truyện = MANGA_MANAGER.tìm_thể_loại(request.form['tim_the_loai'])
-    ds = [danh_sách_truyện[i:i+4]for i in range(0, len(danh_sách_truyện), 4)]
-    return render_template('trang_chủ.html', danh_sách_truyện=ds)
+    ds = UTIL.phân_thành_cột(danh_sách_truyện, số_cột=4)
+    return render_template('trang_chủ.html', danh_sách_truyện=ds, MANGA_MANAGER=MANGA_MANAGER)
 
 
 @app.route('/trang_chu_user', methods=['GET', 'POST'])
@@ -134,7 +133,7 @@ def trang_chủ_user():
             danh_sách_truyện = MANGA_MANAGER.tìm_truyện(request.form['tim'])
         else:
             danh_sách_truyện = MANGA_MANAGER.tìm_thể_loại(request.form['tim_the_loai'])
-    ds = [danh_sách_truyện[i:i+4]for i in range(0, len(danh_sách_truyện), 4)]
+    ds = UTIL.phân_thành_cột(danh_sách_truyện, số_cột=4)
     return render_template('trang_chu_user.html', danh_sách_truyện=ds)
 
 
@@ -147,22 +146,14 @@ def đọc(ten_folder: str):
             danh_sách_chương = [truyen.chương[request.form['tim_chuong']]]
         elif request.form['tim_chuong'] != '':
             danh_sách_chương = []
-    truyện_gợi_ý = []
-    truyện_gợi_ý_tl = []
 
-    for truyen_goi_y in MANGA_MANAGER.danh_sách_truyện.values():
-        if truyen.tác_giả.lower() == truyen_goi_y.tác_giả.lower() and truyen.tên != truyen_goi_y.tên:
-            truyện_gợi_ý.append(truyen_goi_y)
-        for the_loai in truyen.thể_loại:
-            if the_loai in truyen_goi_y.thể_loại:
-                truyện_gợi_ý_tl.append(truyen_goi_y)
-                break
+    truyện_gợi_ý = MANGA_MANAGER.gợi_ý_theo_tác_giả(truyen)
+    truyện_gợi_ý_tl = MANGA_MANAGER.gợi_ý_theo_thể_loại(truyen)
 
     danh_sách_chương = [c.name for c in danh_sách_chương]
-    dstl = [truyện_gợi_ý_tl[i:i+7]for i in range(0, len(truyện_gợi_ý_tl), 7)]
-
-    dsgy = [truyện_gợi_ý[i:i+7]for i in range(0, len(truyện_gợi_ý), 7)]
-    ds = [danh_sách_chương[i:i+4]for i in range(0, len(danh_sách_chương), 4)]
+    dstl = UTIL.phân_thành_cột(truyện_gợi_ý_tl, số_cột=7)
+    dsgy = UTIL.phân_thành_cột(truyện_gợi_ý, số_cột=7)
+    ds = UTIL.phân_thành_cột(danh_sách_chương, số_cột=12)
     return render_template('chapters.html', truyện=truyen, danh_sách_chương=ds, truyện_gợi_ý=dsgy, truyện_gợi_ý_tl=dstl)
 
 
@@ -173,6 +164,10 @@ def đọc_chương(ten_folder: str, chuong: str):
         danh_sách_chap = truyen.tìm_trang(chuong)
     except KeyError:
         return redirect(url_for('đọc_chương', ten_folder=ten_folder, chuong=1))
+
+    if current_user.is_authenticated:
+        current_user.last_read = f"{ten_folder}/{chuong}"
+        USER_MANAGER.update_database()
 
     ds = [[n] for n in danh_sách_chap]
     return render_template('readchap.html', truyện=truyen, chương=chuong, danh_sách_chap=ds)

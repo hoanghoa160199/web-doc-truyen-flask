@@ -19,7 +19,24 @@
 
   {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
   <img src="{{ url_for('lấy_ảnh', filename=filename) }}" style="width: 350px; height: 500px; margin-right:100px" />
-  <h3>{{truyện.tên}}</h3>
+  <h2>
+    {{truyện.tên}}
+    {% if current_user.name %}
+    <a href="{{ url_for(
+      'thêm_hoặc_xóa_vào_tủ_truyện',
+      user_id=current_user.id,
+      ten_folder=truyện.tên_folder,
+      trang_hien_tai=url_for('đọc', ten_folder=truyện.tên_folder)) }}" method="post">
+      <button>
+        {% if truyện.tên_folder in current_user.tu_truyen %}
+        ❤️
+        {% else %}
+        🖤
+        {% endif %}
+      </button>
+    </a>
+    {% endif %}
+  </h2>
   <p>
     Tác giả: {{truyện.tác_giả}}
     <br />
@@ -27,7 +44,7 @@
   </p>
 
   <p>số chương {{truyện.chương|length}}</p>
-  <p> Gợi ý các truyện cùng tác giả {{truyện.tác_giả}}</p>
+  <p>Gợi ý các truyện cùng tác giả {{truyện.tác_giả}}</p>
   <table class="ui grid" id="{{filename}}">
     <tbody>
       {% for dòng_truyện in truyện_gợi_ý %}
@@ -38,7 +55,7 @@
           <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
             <p>
               <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-                style="width: 175px; height: 250px; margin-right:100px" />
+                style="width: 175px; height: 250px; margin-right:20px" />
               <h3>{{truyện.tên}}</h3>
           </a>
         </td>
@@ -59,7 +76,7 @@
           <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
             <p>
               <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-                style="width: 175px; height: 250px; margin-right:100px" />
+                style="width: 175px; height: 250px; margin-right:20px" />
               <h3>{{truyện.tên}}</h3>
           </a>
         </td>
@@ -83,7 +100,7 @@
             method="post">
             <p>
               <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-                style="width: 300px; height: 400px; margin-right:100px" />
+                style="width: 150px; height: 225px; margin-right:10px" />
             </p>
             <h3>{{chương}}</h3>
           </a>
