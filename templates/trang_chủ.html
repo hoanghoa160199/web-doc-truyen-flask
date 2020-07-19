@@ -20,11 +20,12 @@
   <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'" style="font-size: 15px;">
     Tủ truyện yêu thích của tôi ({{current_user.tu_truyen|length}} truyện) ❤️
   </button>
-
   {% if current_user.last_read %}
+  <br />
+  <br />
   {% set ten_folder, chuong = (current_user.last_read.items()|list)[-1] %}
   <button onclick="window.location.href='{{url_for('last_read')}}'" style="font-size: 17px;">
-    Tiếp tục đọc
+    Lần cuối cùng bạn đọc:
     <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
     chương <b>{{chuong}}</b>
   </button>
