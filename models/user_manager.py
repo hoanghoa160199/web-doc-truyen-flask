@@ -28,7 +28,7 @@ class UserManager:
 
     def register(self, name: str, password: str):
         user = User(name, password)
-        self.users[user.id] = user
+        self.users[str(user.id)] = user
         # Add to database.
         self.update_database()
         return user
