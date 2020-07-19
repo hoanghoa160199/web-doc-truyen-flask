@@ -5,11 +5,14 @@ from flask_login import UserMixin
 
 
 class User(UserMixin):
-    def __init__(self, name: str, password: str, tu_truyen: list, last_read: str):
+    def __init__(
+            self, name: str, password: str,
+            tu_truyen: list = None, last_read: str = ""
+    ):
         self.id = uuid4()
         self.name = name
         self.password = password
-        self.tu_truyen = tu_truyen
+        self.tu_truyen = tu_truyen or []
         self.last_read = last_read
 
     def to_dict(self) -> dict:
