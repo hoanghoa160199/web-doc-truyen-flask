@@ -15,7 +15,11 @@
     <button onclick="window.location.href='{{url_for('trang_chủ')}}'">
         Trang chủ
     </button>
-    <p>Danh sách truyện yêu thích</p>
+    <p>
+        Tủ truyện yêu thích của
+        <b>{{ current_user.name }}</b>:
+        {{current_user.tu_truyen|length}} truyện
+    </p>
     <table class="ui grid" id="{{filename}}">
         <tbody>
             {% for dòng_truyện in danh_sách_truyện %}
