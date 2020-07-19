@@ -2,12 +2,13 @@ import logging
 import os
 import sys
 from datetime import datetime
+
 import coloredlogs
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
 from flask_login import LoginManager, current_user, login_user
-from forms import LoginForm
-from models import Manga, MangaManager, User, UserManager
+
+from models import Manga, MangaManager, UserManager
 
 coloredlogs.DEFAULT_LEVEL_STYLES = {
     **coloredlogs.DEFAULT_LEVEL_STYLES,
@@ -26,14 +27,7 @@ logging.basicConfig(level=log_level, format=format_string)
 
 logs = []
 
-config = {
-    "DEBUG": True,          # some Flask specific configs
-    "CACHE_TYPE": "simple",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 300
-}
-
 app = Flask(__name__)
-app.config.from_mapping(config)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 quản_lý_login = LoginManager(app)
