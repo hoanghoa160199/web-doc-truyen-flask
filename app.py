@@ -11,22 +11,24 @@ from utils import Utilities as UTIL
 logs = []
 
 app = Flask(__name__)
+
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
-quản_lý_login = LoginManager(app)
 
-
+LOGIN_MANAGER = LoginManager(app)
 USER_MANAGER = UserManager()
 MANGA_MANAGER = MangaManager()
 
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico', mimetype='image/vnd.microsoft.icon'
+    )
 
 
-@quản_lý_login.user_loader
+@LOGIN_MANAGER.user_loader
 def load_user(user_id):
     return USER_MANAGER.users.get(user_id)
 
@@ -44,8 +46,10 @@ def register():
 
         logs.append(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')} - {success}{error}")
 
-    send_from_directory(os.path.join(app.root_path, 'static'),
-                        'đăng_ký_thành_công.gif', mimetype='image/vnd.microsoft.gif')
+    send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'đăng_ký_thành_công.gif', mimetype='image/vnd.microsoft.gif'
+    )
     return render_template('đăng_ký.html', error=error, success=success, logs=logs)
 
 
