@@ -28,7 +28,7 @@
       user_id=current_user.id,
       ten_folder=truyện.tên_folder,
       trang_hien_tai=url_for('đọc', ten_folder=truyện.tên_folder)) }}" method="post">
-      <button>
+      <button style="font-size: 17px;">
         {% if truyện.tên_folder in current_user.tu_truyen %}
         ❤️ đã thêm vào tủ truyện yêu thích
         {% else %}
@@ -36,6 +36,15 @@
         {% endif %}
       </button>
     </a>
+    {% if truyện.tên_folder in current_user.last_read %}
+    {% set chuong = current_user.last_read[truyện.tên_folder] %}
+    <button onclick="window.location.href='{{url_for(
+        'đọc_chương',
+        ten_folder=truyện.tên_folder, 
+        chuong=chuong)}}'" style="font-size: 17px;">
+      Tiếp tục đọc chương <b>{{chuong}}</b>
+    </button>
+    {% endif %}
     {% endif %}
   </h2>
   <p>
@@ -47,6 +56,8 @@
   </p>
 
   <p>Số chương <b>{{truyện.chương|length}}</b></p>
+
+  {% if truyện_gợi_ý %}
   <p>Gợi ý các truyện cùng tác giả <b>{{truyện.tác_giả}}</b></p>
   <table class="ui grid" id="{{filename}}">
     <tbody>
@@ -67,7 +78,9 @@
       {% endfor %}
     </tbody>
   </table>
+  {% endif %}
 
+  {% if truyện_gợi_ý_tl %}
   <p> Gợi ý các truyện cùng thể loai</p>
   <table class="ui grid" id="{{filename}}">
     <tbody>
@@ -88,7 +101,7 @@
       {% endfor %}
     </tbody>
   </table>
-
+  {% endif %}
 
   <p>Danh sách chương</p>
 

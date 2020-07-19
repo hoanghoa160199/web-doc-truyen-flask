@@ -3,22 +3,40 @@
     "id": "0b324584-18a4-4d0f-ac23-d4b51d1a7c78",
     "name": "admin",
     "password": "admin",
-    "t\u1ee7 truy\u1ec7n": [
+    "favorites": [
       "boruto",
       "go-toubun-no-hanayome",
       "drawin's game",
       "tensei-shitara-slime-datta-ken",
       "kenja-no-mago"
     ],
-    "last_read": "go-toubun-no-hanayome/99"
+    "last_read": {}
   },
   "c39b0986-6aeb-4913-af52-8d58d895d249": {
     "id": "c39b0986-6aeb-4913-af52-8d58d895d249",
     "name": "Hoa",
     "password": "Hoanghoa123",
-    "t\u1ee7 truy\u1ec7n": [
+    "favorites": [
       "kimstsu no yaiba"
     ],
-    "last_read": ""
+    "last_read": {}
+  },
+  "54d4fc23-7dc6-4867-a249-06f6bf6848cb": {
+    "id": "54d4fc23-7dc6-4867-a249-06f6bf6848cb",
+    "name": "hoa123",
+    "password": "123123",
+    "favorites": [
+      "mairimashita-iruma-kun",
+      "drawin's game",
+      "boruto",
+      "tensei-shitara-slime-datta-ken"
+    ],
+    "last_read": {
+      "kimstsu no yaiba": "4",
+      "boruto": "5",
+      "drawin's game": "11",
+      "mairimashita-iruma-kun": "28",
+      "tate-no-yuusha-no-nariagari": "1"
+    }
   }
 }

@@ -22,7 +22,7 @@
   </button>
 
   {% if current_user.last_read %}
-  {% set ten_folder, chuong = current_user.last_read.split('/') %}
+  {% set ten_folder, chuong = (current_user.last_read.items()|list)[-1] %}
   <button onclick="window.location.href='{{url_for('last_read')}}'" style="font-size: 17px;">
     Tiếp tục đọc
     <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
@@ -89,6 +89,16 @@
       {% endfor %}
     </tbody>
   </table>
+  {% if current_user.is_authenticated %}
+  <h3>Lịch sử đọc:</h3>
+  <ul>
+    {% for tên_folder, chuong in current_user.last_read.items() %}
+    <a href="{{url_for('đọc_chương', ten_folder=tên_folder, chuong=chuong)}}">
+      <li><b>{{MANGA_MANAGER.danh_sách_truyện[tên_folder].tên}}</b> chương <b>{{chuong}}</b></li>
+    </a>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </body>
 
 </html>

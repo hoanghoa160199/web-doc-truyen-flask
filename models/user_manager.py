@@ -7,7 +7,7 @@ from .user import User
 class UserManager:
     def __init__(self):
         # TODO: Read from database.
-        with open('data/users.json', 'r', encoding="utf-8") as file:
+        with open('data/users.json', 'r') as file:
             data = json.load(file)
         self.users = {}
 
@@ -15,7 +15,7 @@ class UserManager:
             self.users[v["id"]] = User(
                 name=v["name"],
                 password=v["password"],
-                tu_truyen=v["tủ truyện"],
+                tu_truyen=v["favorites"],
                 last_read=v['last_read']
             )
             self.users[v["id"]].id = v["id"]

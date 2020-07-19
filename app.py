@@ -115,7 +115,7 @@ def xóa_khỏi_tủ_truyện():
 def last_read():
     if not current_user.is_authenticated:
         return
-    ten_folder, chuong = current_user.last_read.split('/')
+    ten_folder, chuong = list(current_user.last_read.items())[-1]
     return redirect(url_for('đọc_chương', ten_folder=ten_folder, chuong=chuong))
 
 
@@ -182,7 +182,8 @@ def đọc_chương(ten_folder: str, chuong: str):
         return redirect(url_for('đọc_chương', ten_folder=ten_folder, chuong=1))
 
     if current_user.is_authenticated:
-        current_user.last_read = f"{ten_folder}/{chuong}"
+        current_user.last_read.pop(ten_folder, None)
+        current_user.last_read[ten_folder] = chuong
         USER_MANAGER.update_database()
 
     ds = [[n] for n in danh_sách_chap]
