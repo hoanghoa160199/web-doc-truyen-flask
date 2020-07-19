@@ -14,9 +14,11 @@
     <input type="submit" value="Lọc">
   </form>
   {% if current_user.name %}
-  <p>{{ current_user.name }}</p>
+  <p>
+    Đang đăng nhập: <b>{{ current_user.name }}</b><br />
+  </p>
   <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'">
-    Tủ truyện yêu thích của tôi
+    Tủ truyện yêu thích của tôi ({{current_user.tu_truyen|length}} truyện)
   </button>
   {% else %}
   <button onclick="window.location.href='{{url_for('login')}}'">
@@ -43,7 +45,8 @@
               {{truyện.tên}}
             </a>
             {% if current_user.name %}
-            <a href="{{ url_for('thêm_vào_tủ_truyện', user_id=current_user.id, ten_folder=truyện.tên_folder) }}" method="post">
+            <a href="{{ url_for('thêm_vào_tủ_truyện', user_id=current_user.id, ten_folder=truyện.tên_folder) }}"
+              method="post">
               <button>
                 {% if truyện.tên_folder in current_user.tu_truyen %}
                 💚
