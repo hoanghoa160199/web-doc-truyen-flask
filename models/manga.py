@@ -18,6 +18,7 @@ class Manga:
         self.năm = info.get('năm', MISSING_INFO)
         self.rank = info.get('điểm', MISSING_INFO)
         self.tên = info.get('tên', tên_folder)
+        self.điểm = info.get('điểm', 0)
         chương = [f for f in os.scandir(f"{PATH}/{tên_folder}") if os.path.isdir(f)]
         chương = {folder.name.replace('chapter-', ''): folder for folder in chương}
         self.chương = dict(sorted(chương.items(), key=lambda p: int(p[0])))

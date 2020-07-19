@@ -29,22 +29,24 @@
       trang_hien_tai=url_for('đọc', ten_folder=truyện.tên_folder)) }}" method="post">
       <button>
         {% if truyện.tên_folder in current_user.tu_truyen %}
-        ❤️
+        ❤️ đã thêm vào tủ truyện yêu thích
         {% else %}
-        🖤
+        🖤 chưa có trong tủ truyện yêu thích
         {% endif %}
       </button>
     </a>
     {% endif %}
   </h2>
   <p>
-    Tác giả: {{truyện.tác_giả}}
+    Tác giả: <b>{{truyện.tác_giả}}</b>
     <br />
-    Thể loại:{{', '.join(truyện.thể_loại)}}
+    Thể loại: <b>{{', '.join(truyện.thể_loại)}}</b>
+    <br />
+    Điểm: <b>{{truyện.điểm}}/10</b>
   </p>
 
-  <p>số chương {{truyện.chương|length}}</p>
-  <p>Gợi ý các truyện cùng tác giả {{truyện.tác_giả}}</p>
+  <p>Số chương <b>{{truyện.chương|length}}</b></p>
+  <p>Gợi ý các truyện cùng tác giả <b>{{truyện.tác_giả}}</b></p>
   <table class="ui grid" id="{{filename}}">
     <tbody>
       {% for dòng_truyện in truyện_gợi_ý %}

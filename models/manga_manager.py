@@ -64,6 +64,13 @@ class MangaManager:
 
     def update(self):
         folders = os.listdir('truyện')
+        danh_sách_truyện = []
         for tên_folder in folders:
             manga = Manga(tên_folder)
+            danh_sách_truyện.append(manga)
+        danh_sách_truyện = sorted(
+            danh_sách_truyện, key=lambda manga: manga.điểm, reverse=True
+        )
+        self.danh_sách_truyện = {}
+        for manga in danh_sách_truyện:
             self.danh_sách_truyện[manga.tên_folder] = manga

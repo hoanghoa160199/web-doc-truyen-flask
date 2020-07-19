@@ -22,19 +22,28 @@
   </button>
 
   {% if current_user.last_read %}
-  <a href="{{ url_for('last_read')}}" method="post">
-    {% set ten_folder, chuong = current_user.last_read.split('/') %}
-    <button style="font-size: 17px;">
-      Tiếp tục đọc
-      <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
-      chương <b>{{chuong}}</b>
-    </button>
-  </a>
+  {% set ten_folder, chuong = current_user.last_read.split('/') %}
+  <button onclick="window.location.href='{{url_for('last_read')}}'" style="font-size: 17px;">
+    Tiếp tục đọc
+    <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
+    chương <b>{{chuong}}</b>
+  </button>
   {% endif %}
 
+  <p>
+    <button onclick="window.location.href='{{url_for('logout')}}'" style="font-size: 15px;">
+      Đăng xuất
+    </button>
+  </p>
+
   {% else %}
-  <button onclick="window.location.href='{{url_for('login')}}'">
-    đăng nhập
+  <form action="{{ url_for('login') }}" method="post">
+    <input type="text" placeholder="Tài khoản" name="username" value="{{ request.form.username }}" />
+    <input type="password" placeholder="Mật khẩu" name="password" value="{{ request.form.password }}" />
+    <input class="btn btn-default" type="submit" value="Đăng nhập" />
+  </form>
+  <button onclick="window.location.href='{{url_for('register')}}'" style="font-size: 15px;">
+    Đăng ký
   </button>
   {% endif %}
 
@@ -47,11 +56,10 @@
 
         {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
         <td class="four wide column">
-          <p>
-            <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
-              <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-                style="width: 350px; height: 500px; margin-right:100px" />
-            </a>
+          <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+            <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+              style="width: 350px; height: 500px; margin-right:100px" />
+          </a>
           <h2>
             <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
               {{truyện.tên}}
@@ -71,10 +79,10 @@
               </button>
             </a>
             {% endif %}
+            <p>
+              Điểm: {{truyện.điểm}}/10
+            </p>
           </h2>
-          </P>
-          </a>
-
         </td>
         {% endif %} {% endfor %}
       </tr>

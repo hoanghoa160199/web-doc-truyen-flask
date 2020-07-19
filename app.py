@@ -3,7 +3,7 @@ from datetime import datetime
 
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager, current_user, login_user, logout_user
 
 from models import Manga, MangaManager, UserManager
 from utils import Utilities as UTIL
@@ -25,7 +25,7 @@ def load_user(user_id):
     return USER_MANAGER.users[user_id]
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'GET'])
 def register():
     error, success = '', ''
     if request.method == 'POST':
@@ -38,7 +38,7 @@ def register():
 
         logs.append(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')} - {success}{error}")
 
-    return render_template('login.html', error=error, success=success, logs=logs)
+    return render_template('đăng_ký.html', error=error, success=success, logs=logs)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -57,6 +57,14 @@ def login():
             error = 'Sai tài khoản / mật khẩu.'
             logs.append(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')} - {error}")
     return render_template('login.html', error=error, success=success, logs=logs, user=user)
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    if not current_user.is_authenticated:
+        return
+    logout_user()
+    return redirect(url_for('trang_chủ'))
 
 
 @app.route('/add_vao_tu_truyen', methods=['POST', 'GET'])
@@ -153,7 +161,7 @@ def đọc(ten_folder: str):
     danh_sách_chương = [c.name for c in danh_sách_chương]
     dstl = UTIL.phân_thành_cột(truyện_gợi_ý_tl, số_cột=7)
     dsgy = UTIL.phân_thành_cột(truyện_gợi_ý, số_cột=7)
-    ds = UTIL.phân_thành_cột(danh_sách_chương, số_cột=12)
+    ds = UTIL.phân_thành_cột(danh_sách_chương, số_cột=11)
     return render_template('chapters.html', truyện=truyen, danh_sách_chương=ds, truyện_gợi_ý=dsgy, truyện_gợi_ý_tl=dstl)
 
 
