@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <title>Manga web của Hòa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='abc.css') }}">
+</head>
+
+<body>
+    <form method="POST">
+        <input name="tim" placeholder="Tìm kiếm truyện">
+        <input name="tim_the_loai" placeholder="Tìm kiếm thể loại">
+        <input type="submit" value="Lọc">
+    </form>
+    <button onclick="window.location.href='{{url_for('trang_chủ')}}'">
+        Trang chủ
+    </button>
+    <p>Danh sách truyện yêu thích</p>
+    <table class="ui grid" id="{{filename}}">
+        <tbody>
+            {% for dòng_truyện in danh_sách_truyện %}
+            <tr>
+                {% for truyện in dòng_truyện %} {% if truyện %}
+                {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
+                <td class="four wide column">
+                    <p>
+                        <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+                            <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                                style="width: 350px; height: 500px; margin-right:100px" />
+                        </a>
+                    <h3>
+                        <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+                            {{truyện.tên}}
+                        </a>
+                        <a href="{{ url_for('xóa_khỏi_tủ_truyện', user_id=current_user.id, ten_folder=truyện.tên_folder) }}"
+                            method="post">
+                            <button>❌</button>
+                        </a>
+                    </h3>
+                    <p>
+                        Tác giả: {{truyện.tác_giả}}
+                        <br />
+                        Thể loại:{{', '.join(truyện.thể_loại)}}
+                    </p>
+
+                    </P>
+                </td>
+                {% endif %} {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+
+</html>

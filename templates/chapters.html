@@ -1,0 +1,100 @@
+<html>
+
+<head>
+  <title>{{truyện.tên}}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div>
+    <form method="POST">
+      <input name="tim_chuong" placeholder="Tìm kiếm chuong">
+      <input type="submit" vlaue="Lọc">
+    </form>
+    <button onclick="window.location.href='{{url_for('trang_chủ')}}'">
+      Trang chủ
+    </button>
+  </div>
+  <br />
+
+  {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
+  <img src="{{ url_for('lấy_ảnh', filename=filename) }}" style="width: 350px; height: 500px; margin-right:100px" />
+  <h3>{{truyện.tên}}</h3>
+  <p>
+    Tác giả: {{truyện.tác_giả}}
+    <br />
+    Thể loại:{{', '.join(truyện.thể_loại)}}
+  </p>
+
+  <p>số chương {{truyện.chương|length}}</p>
+  <p> Gợi ý các truyện cùng tác giả {{truyện.tác_giả}}</p>
+  <table class="ui grid" id="{{filename}}">
+    <tbody>
+      {% for dòng_truyện in truyện_gợi_ý %}
+      <tr>
+        {% for truyện in dòng_truyện %} {% if truyện %}
+        {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
+        <td class="four wide column">
+          <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+            <p>
+              <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                style="width: 175px; height: 250px; margin-right:100px" />
+              <h3>{{truyện.tên}}</h3>
+          </a>
+        </td>
+        {% endif %} {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p> Gợi ý các truyện cùng thể loai</p>
+  <table class="ui grid" id="{{filename}}">
+    <tbody>
+      {% for dòng_truyện in truyện_gợi_ý_tl %}
+      <tr>
+        {% for truyện in dòng_truyện %} {% if truyện %}
+        {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
+        <td class="four wide column">
+          <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+            <p>
+              <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                style="width: 175px; height: 250px; margin-right:100px" />
+              <h3>{{truyện.tên}}</h3>
+          </a>
+        </td>
+        {% endif %} {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+  <p>Danh sách chương</p>
+
+  <table class="ui grid" id="{{filename}}">
+    <tbody>
+      {% for dòng_chương in danh_sách_chương %}
+      <tr>
+        {% for chương in dòng_chương %} {% if chương %}
+        {% set filename = truyện.tên_folder + '/' + chương + '/1.jpg' %}
+        <td class="four wide column">
+          <a href="{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương.replace('chapter-', '')) }}"
+            method="post">
+            <p>
+              <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                style="width: 300px; height: 400px; margin-right:100px" />
+            </p>
+            <h3>{{chương}}</h3>
+          </a>
+        </td>
+        {% endif %} {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+
+
+
+</html>

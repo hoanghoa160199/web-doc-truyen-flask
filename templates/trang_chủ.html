@@ -1,0 +1,69 @@
+<html>
+
+<head>
+  <title>Manga web của Hòa</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='abc.css') }}">
+</head>
+
+<body>
+
+  <form method="POST">
+    <input name="tim" placeholder="Tìm kiếm truyện">
+    <input name="tim_the_loai" placeholder="Tìm kiếm thể loại">
+    <input type="submit" value="Lọc">
+  </form>
+  {% if current_user.name %}
+  <p>{{ current_user.name }}</p>
+  <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'">
+    Tủ truyện yêu thích của tôi
+  </button>
+  {% else %}
+  <button onclick="window.location.href='{{url_for('login')}}'">
+    đăng nhập
+  </button>
+  {% endif %}
+
+  <p>Danh sách truyện</p>
+  <table class="ui grid" id="{{filename}}">
+    <tbody>
+      {% for dòng_truyện in danh_sách_truyện %}
+      <tr>
+        {% for truyện in dòng_truyện %} {% if truyện %}
+
+        {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
+        <td class="four wide column">
+          <p>
+            <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+              <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                style="width: 350px; height: 500px; margin-right:100px" />
+            </a>
+          <h3>
+            <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+              {{truyện.tên}}
+            </a>
+            {% if current_user.name %}
+            <a href="{{ url_for('thêm_vào_tủ_truyện', user_id=current_user.id, ten_folder=truyện.tên_folder) }}" method="post">
+              <button>
+                {% if truyện.tên_folder in current_user.tu_truyen %}
+                💚
+                {% else %}
+                🖤
+                {% endif %}
+              </button>
+            </a>
+            {% endif %}
+          </h3>
+          </P>
+          </a>
+
+        </td>
+        {% endif %} {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+
+
+</html>
