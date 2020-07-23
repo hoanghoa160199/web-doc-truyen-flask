@@ -1,4 +1,3 @@
-from .user import User
+from .comment import Comment
 from .manga import Manga
-from .user_manager import UserManager
-from .manga_manager import MangaManager
+from .user import User

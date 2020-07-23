@@ -1,7 +1,6 @@
 import json
-import typing as t
 
-from .user import User
+from models import User
 
 
 class UserManager:
@@ -19,6 +18,7 @@ class UserManager:
                 last_read=v['last_read']
             )
             self.users[v["id"]].id = v["id"]
+            self.users[v["id"]].avatar = v["avatar"]
 
     def check(self, name: str, password: str):
         for user in self.users.values():
