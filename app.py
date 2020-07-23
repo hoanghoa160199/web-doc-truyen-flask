@@ -5,7 +5,8 @@ from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
 from flask_login import LoginManager, current_user, login_user, logout_user
 
-from models import Manga, MangaManager, UserManager
+from controllers import CommentManager, MangaManager, UserManager
+from models import Manga
 from utils import Utilities as UTIL
 
 logs = []
@@ -18,6 +19,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 LOGIN_MANAGER = LoginManager(app)
 USER_MANAGER = UserManager()
 MANGA_MANAGER = MangaManager()
+COMMENT_MANAGER = CommentManager()
 
 
 @app.route('/favicon.ico')
@@ -154,7 +156,10 @@ def trang_chủ_user():
         else:
             danh_sách_truyện = MANGA_MANAGER.tìm_thể_loại(request.form['tim_the_loai'])
     ds = UTIL.phân_thành_cột(danh_sách_truyện, số_cột=4)
-    return render_template('trang_chu_user.html', danh_sách_truyện=ds)
+    return render_template(
+        'trang_chu_user.html', danh_sách_truyện=ds,
+        comments=COMMENT_MANAGER.tìm_bình_luận_theo_user(current_user.id)
+    )
 
 
 @app.route('/doc/<ten_folder>', methods=['GET', 'POST'])
@@ -174,7 +179,11 @@ def đọc(ten_folder: str):
     dstl = UTIL.phân_thành_cột(truyện_gợi_ý_tl, số_cột=7)
     dsgy = UTIL.phân_thành_cột(truyện_gợi_ý, số_cột=7)
     ds = UTIL.phân_thành_cột(danh_sách_chương, số_cột=11)
-    return render_template('chapters.html', truyện=truyen, danh_sách_chương=ds, truyện_gợi_ý=dsgy, truyện_gợi_ý_tl=dstl)
+    return render_template(
+        'chapters.html',
+        truyện=truyen, danh_sách_chương=ds, truyện_gợi_ý=dsgy, truyện_gợi_ý_tl=dstl,
+        comments=COMMENT_MANAGER.tìm_bình_luận_theo_truyện(ten_folder)
+    )
 
 
 @app.route('/doc/<ten_folder>/<chuong>', methods=['GET', 'POST'])
@@ -194,7 +203,23 @@ def đọc_chương(ten_folder: str, chuong: str):
     return render_template('readchap.html', truyện=truyen, chương=chuong, danh_sách_chap=ds)
 
 
+@app.route('/add_comment', methods=['POST'])
+def thêm_bình_luận():
+    if not current_user.is_authenticated:
+        return
+
+    if request.method == 'POST':
+        COMMENT_MANAGER.thêm_bình_luận(current_user.id, request.args['ten_folder'], request.form['content'])
+        return redirect(url_for('đọc', ten_folder=request.args['ten_folder']))
+
+
 @app.route('/uploads/<path:filename>')
 def lấy_ảnh(filename):
     """Gửi ảnh lên cho Frontend để render."""
     return send_from_directory('truyện/', filename, as_attachment=True)
+
+
+@app.route('/uploads/avatars/<path:user_id>')
+def lấy_avatar(user_id):
+    """Gửi ảnh avatar lên cho Frontend để render."""
+    return send_from_directory('images/avatars/', USER_MANAGER.users[user_id].avatar, as_attachment=True)

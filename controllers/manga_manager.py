@@ -1,6 +1,7 @@
 import os
-from .manga import Manga, MISSING_INFO
 import typing as t
+
+from models.manga import MISSING_INFO, Manga
 
 
 class MangaManager:

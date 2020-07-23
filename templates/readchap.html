@@ -1,73 +1,71 @@
 <html>
-
-<head>
+  <head>
     <title>C-{{chương}} {{truyện.tên}}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  </head>
 
-<body>
-    {% set chương_trước = chương|int - 1 %}
-    {% set chương_tiếp_theo = chương|int + 1 %}
-
-    {% if chương_trước != 0 %}
+  <body>
+    {% set chương_trước = chương|int - 1 %} {% set chương_tiếp_theo = chương|int + 1 %} {% if chương_trước != 0 %}
     <button
-        onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_trước) }}'">
-        prev chapter-{{chương_trước}}
+      onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_trước) }}'"
+    >
+      prev chapter-{{chương_trước}}
     </button>
     {% endif %}
 
     <button onclick="window.location.href='{{url_for('đọc', ten_folder=truyện.tên_folder)}}'">
-        Danh sách chương
+      Danh sách chương
     </button>
 
     <button
-        onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_tiếp_theo) }}'">
-        next chapter-{{chương_tiếp_theo}}
+      onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_tiếp_theo) }}'"
+    >
+      next chapter-{{chương_tiếp_theo}}
     </button>
     <button onclick="window.location.href='{{url_for('trang_chủ')}}'">
-        Quay về trang chủ
+      Quay về trang chủ
     </button>
 
     <p>Nội dung chương {{chương}}</p>
     <p>Số trang truyện: {{truyện.tìm_trang(chương)|length}}</p>
 
-    <table class="ui grid" id="{{filename}}" style="margin: 0 auto">
-        <tbody>
-            {% for dòng_chap in danh_sách_chap %}
-            <tr>
-                {% for chap in dòng_chap %} {% if chap and chap != 'filename.jpg' %}
-                {% set filename = truyện.tên_folder + '/chapter-' + chương + '/' + chap %}
-                <td class="four wide column">
-                    <p>
-                        <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-                            style="margin-left: auto; margin-right: auto; display: block;" />
-                    </p>
-                </td>
-                {% endif %} {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table class="ui grid" id="{{filename}}" style="margin: 0 auto;">
+      <tbody>
+        {% for dòng_chap in danh_sách_chap %}
+        <tr>
+          {% for chap in dòng_chap %} {% if chap and chap != 'filename.jpg' %} {% set filename = truyện.tên_folder +
+          '/chapter-' + chương + '/' + chap %}
+          <td class="four wide column">
+            <p>
+              <img
+                src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                style="margin-left: auto; margin-right: auto; display: block;"
+              />
+            </p>
+          </td>
+          {% endif %} {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
     {% if chương_trước != 0 %}
     <button
-        onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_trước) }}'">
-        prev chapter-{{chương_trước}}
+      onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_trước) }}'"
+    >
+      prev chapter-{{chương_trước}}
     </button>
     {% endif %}
 
     <button onclick="window.location.href='{{url_for('đọc', ten_folder=truyện.tên_folder)}}'">
-        Danh sách chương
+      Danh sách chương
     </button>
 
     <button
-        onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_tiếp_theo) }}'">
-        next chapter-{{chương_tiếp_theo}}
+      onClick="window.location.href='{{ url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chương_tiếp_theo) }}'"
+    >
+      next chapter-{{chương_tiếp_theo}}
     </button>
-
-
-
-</body>
-
+  </body>
 </html>

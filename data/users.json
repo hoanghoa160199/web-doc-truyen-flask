@@ -13,15 +13,23 @@
     "last_read": {
       "tensei-shitara-slime-datta-ken": "7",
       "kimstsu no yaiba": "5"
-    }
+    },
+    "avatar": "8.jpg"
   },
   "c39b0986-6aeb-4913-af52-8d58d895d249": {
     "id": "c39b0986-6aeb-4913-af52-8d58d895d249",
     "name": "Hoa",
     "password": "Hoanghoa123",
-    "favorites": [
-      "kimstsu no yaiba"
-    ],
-    "last_read": {}
+    "favorites": ["kimstsu no yaiba"],
+    "last_read": {},
+    "avatar": "4.jpg"
+  },
+  "871fe948-6028-4953-8e32-53283123199c": {
+    "id": "871fe948-6028-4953-8e32-53283123199c",
+    "name": "shira",
+    "password": "123",
+    "favorites": [],
+    "last_read": {},
+    "avatar": "4.jpg"
   }
 }
