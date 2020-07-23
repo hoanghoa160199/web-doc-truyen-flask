@@ -1,37 +1,31 @@
 <html>
+  <head>
+    <title>Manga viewer của Hòa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  </head>
 
-<head>
-  <title>Manga viewer của Hòa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
+  <body>
+    <div class="container">
+      <h2>Đăng ký</h2>
+      <form action="{{ url_for('register') }}" method="post">
+        <input type="text" placeholder="Tài khoản" name="username" value="{{ request.form.username }}" />
+        <input type="password" placeholder="Mật khẩu" name="password" value="{{ request.form.password }}" />
+        <input class="btn btn-default" type="submit" value="Đăng ký" />
+      </form>
 
-<body>
-  <div class="container">
-    <h2>Đăng ký</h2>
-    <form action="{{ url_for('register') }}" method="post">
-      <input type="text" placeholder="Tài khoản" name="username" value="{{ request.form.username }}" />
-      <input type="password" placeholder="Mật khẩu" name="password" value="{{ request.form.password }}" />
-      <input class="btn btn-default" type="submit" value="Đăng ký" />
-    </form>
+      <button onclick="window.location.href='{{url_for('trang_chủ')}}'">
+        Quay về trang chủ
+      </button>
 
-    <button onclick="window.location.href='{{url_for('trang_chủ')}}'">
-      Quay về trang chủ
-    </button>
-
-    {% if error %}
-    <p class="error"><strong>Lỗi:</strong> {{ error }}</p>
-    {% endif %}
-
-    {% if success %}
-    <p class="success"><strong>Thành công:</strong> {{ success }}</p>
-    <img src='static/đăng_ký_thành_công.gif' />
-    {% endif %}
-
-    {% for log in logs %}
-    <p>{{ log }}</p>
-    {% endfor %}
-  </div>
-</body>
-
+      {% if error %}
+      <p class="error"><strong>Lỗi:</strong> {{ error }}</p>
+      {% endif %} {% if success %}
+      <p class="success"><strong>Thành công:</strong> {{ success }}</p>
+      <img src="static/đăng_ký_thành_công.gif" />
+      {% endif %} {% for log in logs %}
+      <p>{{ log }}</p>
+      {% endfor %}
+    </div>
+  </body>
 </html>

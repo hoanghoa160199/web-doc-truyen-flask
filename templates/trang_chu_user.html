@@ -17,6 +17,7 @@
     </button>
     <p>
         Tủ truyện yêu thích của
+        <img src="{{ url_for('lấy_avatar', user_id=current_user.id) }}" style="width: 25px; height: 25px;" />
         <b>{{ current_user.name }}</b>:
         {{current_user.tu_truyen|length}} truyện
     </p>
@@ -54,6 +55,19 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% for comment in comments %}
+    <ul style="font-size: x-large;">
+      <li>
+        <img src="{{ url_for('lấy_avatar', user_id=comment.user_id) }}" style="width: 35px; height: 35px;" />
+        <a href="{{ url_for('đọc', ten_folder=comment.manga_id) }}" method="post">
+            {{comment.time}}
+        </a>
+        <br />
+        {{comment.content}}
+      </li>
+    </ul>
+    {% endfor %}
 </body>
 
 

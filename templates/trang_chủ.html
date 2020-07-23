@@ -1,105 +1,104 @@
 <html>
+  <head>
+    <title>Manga web của Hòa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  </head>
 
-<head>
-  <title>Manga web của Hòa</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
-
-<body>
-
-  <form method="POST">
-    <input name="tim" placeholder="Tìm kiếm truyện">
-    <input name="tim_the_loai" placeholder="Tìm kiếm thể loại">
-    <input type="submit" value="Lọc">
-  </form>
-  {% if current_user.name %}
-  <p>
-    Đang đăng nhập: <b>{{ current_user.name }}</b><br />
-  </p>
-  <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'" style="font-size: 15px;">
-    Tủ truyện yêu thích của tôi ({{current_user.tu_truyen|length}} truyện) ❤️
-  </button>
-  {% if current_user.last_read %}
-  <br />
-  <br />
-  {% set ten_folder, chuong = (current_user.last_read.items()|list)[-1] %}
-  <button onclick="window.location.href='{{url_for('last_read')}}'" style="font-size: 17px;">
-    Lần cuối cùng bạn đọc:
-    <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
-    chương <b>{{chuong}}</b>
-  </button>
-  {% endif %}
-
-  <p>
-    <button onclick="window.location.href='{{url_for('logout')}}'" style="font-size: 15px;">
-      Đăng xuất
+  <body>
+    <form method="POST">
+      <input name="tim" placeholder="Tìm kiếm truyện" />
+      <input name="tim_the_loai" placeholder="Tìm kiếm thể loại" />
+      <input type="submit" value="Lọc" />
+    </form>
+    {% if current_user.name %}
+    <p>
+      Đang đăng nhập:
+      <img src="{{ url_for('lấy_avatar', user_id=current_user.id) }}" style="width: 25px; height: 25px;" />
+      <b>{{ current_user.name }}</b><br />
+    </p>
+    <button onclick="window.location.href='{{url_for('trang_chủ_user')}}'" style="font-size: 15px;">
+      Tủ truyện yêu thích của tôi ({{current_user.tu_truyen|length}} truyện) ❤️
     </button>
-  </p>
+    {% if current_user.last_read %}
+    <br />
+    <br />
+    {% set ten_folder, chuong = (current_user.last_read.items()|list)[-1] %}
+    <button onclick="window.location.href='{{url_for('last_read')}}'" style="font-size: 17px;">
+      Lần cuối cùng bạn đọc:
+      <b>{{MANGA_MANAGER.danh_sách_truyện[ten_folder].tên}}</b>
+      chương <b>{{chuong}}</b>
+    </button>
+    {% endif %}
 
-  {% else %}
-  <form action="{{ url_for('login') }}" method="post">
-    <input type="text" placeholder="Tài khoản" name="username" value="{{ request.form.username }}" />
-    <input type="password" placeholder="Mật khẩu" name="password" value="{{ request.form.password }}" />
-    <input class="btn btn-default" type="submit" value="Đăng nhập" />
-  </form>
-  <button onclick="window.location.href='{{url_for('register')}}'" style="font-size: 15px;">
-    Đăng ký
-  </button>
-  {% endif %}
+    <p>
+      <button onclick="window.location.href='{{url_for('logout')}}'" style="font-size: 15px;">
+        Đăng xuất
+      </button>
+    </p>
 
-  <p>Danh sách truyện</p>
-  <table class="ui grid" id="{{filename}}">
-    <tbody>
-      {% for dòng_truyện in danh_sách_truyện %}
-      <tr>
-        {% for truyện in dòng_truyện %} {% if truyện %}
+    {% else %}
+    <form action="{{ url_for('login') }}" method="post">
+      <input type="text" placeholder="Tài khoản" name="username" value="{{ request.form.username }}" />
+      <input type="password" placeholder="Mật khẩu" name="password" value="{{ request.form.password }}" />
+      <input class="btn btn-default" type="submit" value="Đăng nhập" />
+    </form>
+    <button onclick="window.location.href='{{url_for('register')}}'" style="font-size: 15px;">
+      Đăng ký
+    </button>
+    {% endif %}
 
-        {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
-        <td class="four wide column" style="vertical-align: top;">
-          <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
-            <img src="{{ url_for('lấy_ảnh', filename=filename) }}"
-              style="width: 400px; height: 550px; margin-right: 50px; margin-top: 10px;" />
-          </a>
-          <h2 style="max-width: 400px;">
+    <p>Danh sách truyện</p>
+    <table class="ui grid" id="{{filename}}">
+      <tbody>
+        {% for dòng_truyện in danh_sách_truyện %}
+        <tr>
+          {% for truyện in dòng_truyện %} {% if truyện %} {% set filename = truyện.tên_folder + '/thumbnail.jpg' %}
+          <td class="four wide column" style="vertical-align: top;">
             <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
-              <span style="font-size: smaller;">{{truyện.tên}}</span>
+              <img
+                src="{{ url_for('lấy_ảnh', filename=filename) }}"
+                style="width: 400px; height: 550px; margin-right: 50px; margin-top: 10px;"
+              />
             </a>
-            {% if current_user.name %}
-            <a href="{{ url_for(
+            <h2 style="max-width: 400px;">
+              <a href="{{ url_for('đọc', ten_folder=truyện.tên_folder) }}" method="post">
+                <span style="font-size: smaller;">{{truyện.tên}}</span>
+              </a>
+              {% if current_user.name %}
+              <a
+                href="{{ url_for(
               'thêm_hoặc_xóa_vào_tủ_truyện',
               user_id=current_user.id,
               ten_folder=truyện.tên_folder,
-              trang_hien_tai=url_for('trang_chủ')) }}" method="post">
-              <button>
-                {% if truyện.tên_folder in current_user.tu_truyen %}
-                ❤️
-                {% else %}
-                🖤
-                {% endif %}
+              trang_hien_tai=url_for('trang_chủ')) }}"
+                method="post"
+              >
+                <button>
+                  {% if truyện.tên_folder in current_user.tu_truyen %} ❤️ {% else %} 🖤 {% endif %}
+                </button>
+              </a>
+              {% endif %}
+              <br />
+              {{truyện.điểm * '🧡'}}{{(10-truyện.điểm) * '🤍'}}
+            </h2>
+            <p>
+              <br />
+              {% if truyện.tên_folder in current_user.last_read %} {% set chuong =
+              current_user.last_read[truyện.tên_folder] %}
+              <button
+                onclick="window.location.href='{{url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chuong)}}'"
+                style="font-size: 17px;"
+              >
+                Tiếp tục đọc chương <b>{{chuong}}</b>
               </button>
-            </a>
-            {% endif %}
-            <br />
-            {{truyện.điểm * '🧡'}}{{(10-truyện.điểm) * '🤍'}}
-          </h2>
-          <p>
-            <br />
-            {% if truyện.tên_folder in current_user.last_read %}
-            {% set chuong = current_user.last_read[truyện.tên_folder] %}
-            <button
-              onclick="window.location.href='{{url_for('đọc_chương', ten_folder=truyện.tên_folder, chuong=chuong)}}'"
-              style="font-size: 17px;">
-              Tiếp tục đọc chương <b>{{chuong}}</b>
-            </button>
-            {% endif %}
-          </p>
-        </td>
-        {% endif %} {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</body>
-
+              {% endif %}
+            </p>
+          </td>
+          {% endif %} {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
 </html>
